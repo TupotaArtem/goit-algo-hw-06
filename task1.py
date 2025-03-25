@@ -26,27 +26,30 @@ class Record:
     def add_phone(self,number):
         phone=Phone(number)
         self.phones.append(phone)
-        
+            
     def remove_phone(self, number):
-        for phone in self.phones:
-            if phone.value == number:  
-                self.phones.remove(phone)  # Видаляємо об'єкт Phone
-                return  
-        raise ValueError(f"Phone number {number} not found")  
-    
+        phone = self.find_phone(number)  # Знаходимо об'єкт Phone
+        if phone:  # Перевіряємо, чи знайшли номер
+            self.phones.remove(phone)  # Видаляємо об'єкт Phone
+        else:
+            raise ValueError(f"Phone number {number} not found")
+
+
     def edit_phone(self, old_number, new_number):
-    
-        for phone in self.phones:
-            if phone.value == old_number: 
-                phone.value = new_number  
-                return  
-        raise ValueError(f"Phone number {old_number} not found") 
-    
-    def find_phone (self,number:str):
+        phone = self.find_phone(old_number)  # Шукаємо старий номер
+        
+        if phone:  
+            self.remove_phone(old_number)  # Видаляємо знайдений номер
+            self.add_phone(new_number)  # Додаємо новий номер
+        else:
+            raise ValueError(f"Phone number {old_number} not found")
+            
+    def find_phone (self,number:str): 
         for phone in self.phones:
            if phone.value == number:  
                return phone
-           return None
+        return None
+           
 
     def __str__(self):
         return f"Contact name: {self.name.value}, phones: {'; '.join(p.value for p in self.phones)}"
@@ -59,7 +62,7 @@ class AddressBook(UserDict):
 
     def find(self,name):
         return self.data.get(name,None)
-        pass
+        
 
     def delete(self,name):
         if name in self.data :
@@ -72,6 +75,7 @@ class AddressBook(UserDict):
 
 
 def main ():
+    
    # Створення нової адресної книги
     book = AddressBook()
 
